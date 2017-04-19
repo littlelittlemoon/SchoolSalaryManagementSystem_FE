@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div class="login-wrap">
         <div class="ms-title">用户登录</div>
         <div class="ms-login">
@@ -7,20 +7,21 @@
                     <el-input v-model="ruleForm.username" placeholder="username"></el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input type="password" placeholder="password" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')"></el-input>
+                    <el-input type="password" placeholder="password" v-model="ruleForm.password"
+                              @keyup.enter.native="submitForm('ruleForm')"></el-input>
                 </el-form-item>
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
                 </div>
-                <p style="font-size:12px;line-height:30px;color:#999;">Tips : 用户名和密码随便填。</p>
             </el-form>
         </div>
     </div>
 </template>
 
 <script>
+    import axios from 'axios';
     export default {
-        data: function(){
+        data: function () {
             return {
                 ruleForm: {
                     username: '',
@@ -28,10 +29,10 @@
                 },
                 rules: {
                     username: [
-                        { required: true, message: '请输入用户名', trigger: 'blur' }
+                        {required: true, message: '请输入用户名', trigger: 'blur'}
                     ],
                     password: [
-                        { required: true, message: '请输入密码', trigger: 'blur' }
+                        {required: true, message: '请输入密码', trigger: 'blur'}
                     ]
                 }
             }
@@ -41,8 +42,25 @@
                 const self = this;
                 self.$refs[formName].validate((valid) => {
                     if (valid) {
-                        localStorage.setItem('ms_username',self.ruleForm.username);
-                        self.$router.push('/readme');
+                        axios.get('http://139.224.129.108:8089/staffInfo/login', {
+                            params: {
+                                username: self.ruleForm.username,
+                                password: self.ruleForm.password
+                            }
+                        }).then(function (response) {
+//                            console.log(response);
+                            if(response.data.code == 1){
+                                self.$notify.error({
+                                    title: '登录失败',
+                                    message: response.data.message
+                                });
+                            }else{
+                                self.$router.push('/AboutMe');
+                            }
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                        localStorage.setItem('ms_username', 'tantan');
                     } else {
                         console.log('error submit!!');
                         return false;
@@ -54,37 +72,41 @@
 </script>
 
 <style scoped>
-    .login-wrap{
+    .login-wrap {
         position: relative;
-        width:100%;
-        height:100%;
+        width: 100%;
+        height: 100%;
     }
-    .ms-title{
+
+    .ms-title {
         position: absolute;
-        top:50%;
-        width:100%;
+        top: 50%;
+        width: 100%;
         margin-top: -230px;
         text-align: center;
-        font-size:30px;
+        font-size: 30px;
         color: #fff;
 
     }
-    .ms-login{
+
+    .ms-login {
         position: absolute;
-        left:50%;
-        top:50%;
-        width:300px;
-        height:160px;
-        margin:-150px 0 0 -190px;
-        padding:40px;
+        left: 50%;
+        top: 50%;
+        width: 300px;
+        height: 160px;
+        margin: -150px 0 0 -190px;
+        padding: 40px;
         border-radius: 5px;
         background: #fff;
     }
-    .login-btn{
+
+    .login-btn {
         text-align: center;
     }
-    .login-btn button{
-        width:100%;
-        height:36px;
+
+    .login-btn button {
+        width: 100%;
+        height: 36px;
     }
 </style>

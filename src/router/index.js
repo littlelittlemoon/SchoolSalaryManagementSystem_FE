@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-
+import axios from 'axios';
 Vue.use(Router);
 
 export default new Router({
@@ -10,7 +10,7 @@ export default new Router({
             redirect: '/login'
         },
         {
-            path: '/readme',
+            path: '/AboutMe',
             component: resolve => require(['../components/common/Home.vue'], resolve),
             children:[
                 {

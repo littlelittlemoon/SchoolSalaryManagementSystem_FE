@@ -3,32 +3,35 @@
         <el-input
             placeholder="员工姓名、编号、部门..."
             icon="search"
-            v-model="input2"
-            :on-icon-click="handleIconClick" style="margin-bottom: 10px;width: 30%" v-if="twoHide">
+            v-model="staffInfoSearch"
+            :on-icon-click="handleSearchClick" style="margin-bottom: 10px;width: 30%" v-if="twoHide">
         </el-input>
         <!--<el-button style="position: absolute; right: 0px" type="primary">上报财务处<i-->
         <!--class="el-icon-upload2 el-icon&#45;&#45;right"></i></el-button>-->
-        <el-table :data="tableData" border style="width: 100%" v-if="twoHide">
+        <el-table :data="staffListData" border style="width: 100%" v-if="twoHide">
             <el-table-column type="expand">
                 <template scope="props">
-                    <el-form label-position="left" inline class="demo-table-expand" >
+                    <el-form label-position="left" inline class="demo-table-expand">
                         <el-form-item label="身份证号">
-                            <span>{{ props.row.identityNum }}</span>
+                            <span>{{ props.row.staffIdentityNum}}</span>
                         </el-form-item>
                         <el-form-item label="银行卡号">
-                            <span>{{ props.row.bankAcount }}</span>
+                            <span>{{ props.row.staffBankAcount }}</span>
                         </el-form-item>
                         <el-form-item label="电话号码">
-                            <span>{{ props.row.phoneNum }}</span>
+                            <span>{{ props.row.staffTel }}</span>
                         </el-form-item>
                         <el-form-item label="基本工资">
-                            <span>{{ props.row.baseMoney }}</span>
+                            <span>{{ props.row.titleBaseSalary }}</span>
                         </el-form-item>
                         <el-form-item label="职务工资">
-                            <span>{{ props.row.dutyMoney }}</span>
+                            <span>{{ props.row.dutySalary }}</span>
                         </el-form-item>
                         <el-form-item label="职称工资">
-                            <span>{{ props.row.titleMoney }}</span>
+                            <span>{{ props.row.titleSalary }}</span>
+                        </el-form-item>
+                        <el-form-item label="角色">
+                            <span>{{ props.row.roleName }}</span>
                         </el-form-item>
                     </el-form>
                 </template>
@@ -39,7 +42,7 @@
             </el-table-column>
             <el-table-column
                 label="员工编号"
-                prop="staffNum">
+                prop="staffId">
             </el-table-column>
             <el-table-column
                 label="员工姓名"
@@ -50,26 +53,26 @@
                 prop="staffSex">
             </el-table-column>
             <el-table-column
-                prop="staffDep"
+                prop="departmentName"
                 label="所属部门"
-                :filters="[{ text: '计算机学院', value: '计算机学院' }, { text: '软件工程学院', value: '软件工程学院' }, { text: '大气科学学院', value: '大气科学学院' }]"
+                :filters="[{ text: '计算机系', value: '计算机系' }, { text: '软件工程学院', value: '软件工程学院' }, { text: '大气科学学院', value: '大气科学学院' }]"
                 :filter-method="filterDep" width="120">
             </el-table-column>
             <el-table-column
                 label="职称"
-                prop="staffTitle"
+                prop="titleName"
                 :filters="[{ text: '教授', value: '教授' }, { text: '副教授', value: '副教授' }, { text: '讲师', value: '讲师' }, { text: '系主任', value: '系主任' }]"
                 :filter-method="filterTit">
             </el-table-column>
             <el-table-column
                 label="职务"
-                prop="staffDuty"
+                prop="dutyName"
                 :filters="[{ text: '部门管理员', value: '部门管理员' }, { text: '财务处管理员', value: '财务处管理员' }, { text: '人事处管理员', value: '人事处管理员' }, { text: '普通教职工', value: '普通教职工' }]"
                 :filter-method="filterDuty">
             </el-table-column>
             <el-table-column
                 label="入职时间"
-                prop="entryTime">
+                prop="staffEntryTime">
             </el-table-column>
             <el-table-column label="操作" width="150">
                 <template scope="scope">
@@ -181,8 +184,9 @@
         padding-left: 5px;
         padding-right: 5px;
     }
+
     .div-block {
-        margin-top:20px;
+        margin-top: 20px;
         padding: 20px;
         width: 60%;
         border: 1px solid #eaeefb;
@@ -192,10 +196,14 @@
 </style>
 
 <script>
+    import axios from 'axios';
+
     export default {
         data() {
             return {
-                input2: '',
+                staffInfoSearch: '',
+                currentPage: 0,
+                pageSize: 8,
                 oneHide: true,
                 twoHide: true,
                 activeName: 'first',
@@ -232,79 +240,73 @@
                     ],
                     identityNum: [
                         {required: true, message: '请输入员工身份证号', trigger: 'blur'},
-                        {length:18, message: '长度为18位数字', trigger: 'blur'}
+                        {length: 18, message: '长度为18位数字', trigger: 'blur'}
                     ],
                     bankAcount: [
                         {required: true, message: '请输入员工银行卡号', trigger: 'blur'},
-                        {length:18, message: '长度为18位数字', trigger: 'blur'}
+                        {length: 18, message: '长度为18位数字', trigger: 'blur'}
                     ],
                     phoneNum: [
                         {required: true, message: '请输入员工电话号码', trigger: 'blur'},
-                        {length:11, message: '长度为11位数字', trigger: 'blur'}
+                        {length: 11, message: '长度为11位数字', trigger: 'blur'}
                     ]
                 },
-                tableData: [{
-                    staffNum: '2013001',
-                    staffName: '蔡明',
-                    staffSex: '男',
-                    identityNum: '510231198603024682',
-                    bankAcount: '6217253100003034123',
-                    phoneNum: '18408652351',
-                    entryTime: '2009.05.06',
-                    staffDep: '计算机学院',
-                    staffDuty: '普通教职工',
-                    staffTitle: '教授',
-                    titleMoney: '2400￥',
-                    dutyMoney: '0￥',
-                    baseMoney: '4500￥'
-                }, {
-                    staffNum: '2013002',
-                    staffName: '刘敏',
-                    staffSex: '女',
-                    identityNum: '510231198603024682',
-                    bankAcount: '6217253100003034123',
-                    phoneNum: '18408652351',
-                    entryTime: '2003.05',
-                    staffDep: '计算机学院',
-                    staffDuty: '普通教职工',
-                    staffTitle: '副教授',
-                    titleMoney: '2300￥',
-                    dutyMoney: '0￥',
-                    baseMoney: '4300￥'
-                }, {
-                    staffNum: '2013004',
-                    staffName: '振宇',
-                    staffSex: '女',
-                    identityNum: '510231198603024682',
-                    bankAcount: '6217253100003034123',
-                    phoneNum: '18408652351',
-                    entryTime: '2003.05',
-                    staffDep: '软件工程学院',
-                    staffDuty: '普通教职工',
-                    staffTitle: '系主任',
-                    titleMoney: '3000￥',
-                    dutyMoney: '0￥',
-                    baseMoney: '4500￥'
-                }, {
-                    staffNum: '2013005',
-                    staffName: '李华',
-                    staffSex: '女',
-                    identityNum: '510231198603024682',
-                    bankAcount: '6217253100003034123',
-                    phoneNum: '18408652351',
-                    entryTime: '2012.01',
-                    staffDep: '大气科学学院',
-                    staffDuty: '普通教职工',
-                    staffTitle: '讲师',
-                    titleMoney: '2200￥',
-                    dutyMoney: '0￥',
-                    baseMoney: '4200￥'
-                }]
+                staffListData: []
             }
         },
+        created: function () {
+//            this.getStaffList(staffInfoSearch, currentPage, pageSize);
+            const self = this;
+            axios.get('http://139.224.129.108:8089/staffInfo/staffList', {
+                params: {
+                    currentPage: self.currentPage,
+                    pageSize: self.pageSize
+                }
+            }).then(function (response) {
+                console.log(response);
+                if (response.data.code == 1) {
+                    self.$notify.error({
+                        title: '操作失败',
+                        message: response.data.message
+                    });
+                } else {
+                    var staffList = response.data.data;
+                    if (staffList != null) {
+                        self.staffListData = staffList;
+                    }
+                }
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
         methods: {
-            handleIconClick(ev) {
-                console.log(ev);
+            getStaffList(staffInfoSearch, currentPage, pageSize){
+                const self = this;
+                axios.get('http://139.224.129.108:8089/staffInfo/staffList', {
+                    params: {
+                        staffInfoSearch: staffInfoSearch,
+                        currentPage: currentPage,
+                        pageSize: pageSize
+                    }
+                }).then(function (response) {
+                    console.log(response);
+                    if (response.data.code == 1) {
+                        self.$notify.error({
+                            title: '操作失败',
+                            message: response.data.message
+                        });
+                    } else {
+                        var staffList = response.data.data;
+                        if (staffList != null) {
+                            self.staffListData = staffList;
+                        }
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
+            handleSearchClick(ev) {
+                this.getStaffList(this.staffInfoSearch, this.currentPage, this.pageSize);
             },
             handleClick(tab, event) {
                 console.log(tab, event);
@@ -334,10 +336,10 @@
                 this.$message.error('删除第' + (index + 1) + '行');
             },
             filterDep(value, row) {
-                return row.staffDep === value;
+                return row.departmentName === value;
             },
             filterDuty(value, row) {
-                return row.staffDuty === value;
+                return row.dutyName === value;
             },
             isDelete() {
                 this.$confirm('删除‘计算机学院成员：蔡明’, 是否继续?', '提示', {

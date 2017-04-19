@@ -22,7 +22,6 @@
                 <br>
                 <el-checkbox disabled checked>工资表管理</el-checkbox>
                 <br>
-
                 <el-checkbox disabled checked>薪资标准管理</el-checkbox>
                 <br>
 
