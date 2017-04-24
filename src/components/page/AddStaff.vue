@@ -86,6 +86,7 @@
 
 <script>
     import axios from 'axios';
+    import qs from 'qs';
     export default {
         data() {
             return {
@@ -144,8 +145,8 @@
                 const self = this;
                 self.$refs[formName].validate((valid) => {
                         if (valid) {
-                            axios.post('http://139.224.129.108:8089/staffInfo/addStaff', {
-                                params: {
+                            axios.post('http://139.224.129.108:8089/staffInfo/addStaff',qs.stringify(
+                               {
                                     staffName: self.ruleForm.staffName,
                                     staffSex: self.ruleForm.staffSex,
                                     departmentId: self.ruleForm.staffDepartment,
@@ -156,8 +157,7 @@
                                     staffIdentityNum: self.ruleForm.identityNum,
                                     staffBankAcount: self.ruleForm.bankAcount,
                                     staffTel: self.ruleForm.phoneNum
-                                }
-                            }).then(function (response) {
+                            })).then(function (response) {
                                 console.log(response);
                                 if (response.data.code == 1) {
                                     self.$notify.error({
