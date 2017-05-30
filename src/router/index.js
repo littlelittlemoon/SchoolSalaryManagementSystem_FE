@@ -47,12 +47,12 @@ export default new Router({
                     component: resolve => require(['../components/page/ManageStaffInfo.vue'], resolve)    // vue-echarts-v3组件
                 },
                 {
-                    path: '/SalaryInfo',
-                    component: resolve => require(['../components/page/SalaryInfo.vue'], resolve)    // SalaryInfo组件
+                    path: '/StaffHistorySalary',
+                    component: resolve => require(['../components/page/StaffHistorySalary.vue'], resolve)    // SalaryInfo组件
                 },
                 {
-                    path: '/CheckInfo',
-                    component: resolve => require(['../components/page/CheckInfo.vue'], resolve)    // CheckInfo组件
+                    path: '/StaffCheckInfo',
+                    component: resolve => require(['../components/page/StaffCheckInfo.vue'], resolve)    // CheckInfo组件
                 },
                 {
                     path: '/ApplicationForLeave',
@@ -65,6 +65,26 @@ export default new Router({
                 {
                     path: '/ChargeBack',
                     component: resolve => require(['../components/page/ChargeBack.vue'], resolve)    // /ApplicationForLeave组件
+                },
+                {
+                    path: '/ApplicationList',
+                    component: resolve => require(['../components/page/ApplicationList.vue'], resolve)    // /ApplicationForLeave组件
+                },
+                {
+                    path: '/ModifyTaxRule',
+                    component: resolve => require(['../components/page/ModifyTaxRule.vue'], resolve)    // ModifyTaxRule组件
+                },
+                {
+                    path: '/ModifyInsuranceRule',
+                    component: resolve => require(['../components/page/ModifyInsuranceRule.vue'], resolve)    // ModifyTaxRule组件
+                },
+                {
+                    path: '/ModifyAbsenceRule',
+                    component: resolve => require(['../components/page/ModifyAbsenceRule.vue'], resolve)    // ModifyTaxRule组件
+                },
+                {
+                    path: '/changePwd',
+                    component: resolve => require(['../components/page/changePwd.vue'], resolve)    // ModifyTaxRule组件
                 }
             ]
         },

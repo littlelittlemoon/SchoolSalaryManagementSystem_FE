@@ -4,11 +4,9 @@
             placeholder="员工姓名、编号、部门..."
             icon="search"
             v-model="staffInfoSearch"
-            :on-icon-click="handleSearchClick" style="margin-bottom: 10px;width: 30%" v-if="twoHide">
+            :on-icon-click="handleSearchClick" style="margin-bottom: 10px;width: 30%">
         </el-input>
-        <!--<el-button style="position: absolute; right: 0px" type="primary">上报财务处<i-->
-        <!--class="el-icon-upload2 el-icon&#45;&#45;right"></i></el-button>-->
-        <el-table :data="staffListData" border style="width: 100%" v-if="twoHide">
+        <el-table :data="staffListData" border style="width: 100%">
             <el-table-column type="expand">
                 <template scope="props">
                     <el-form label-position="left" inline class="demo-table-expand">
@@ -21,24 +19,11 @@
                         <el-form-item label="电话号码">
                             <span>{{ props.row.staffTel }}</span>
                         </el-form-item>
-                        <el-form-item label="基本工资">
-                            <span>{{ props.row.titleBaseSalary }}</span>
-                        </el-form-item>
-                        <el-form-item label="职务工资">
-                            <span>{{ props.row.dutySalary }}</span>
-                        </el-form-item>
-                        <el-form-item label="职称工资">
-                            <span>{{ props.row.titleSalary }}</span>
-                        </el-form-item>
-                        <el-form-item label="角色">
+                        <el-form-item label="角色类型">
                             <span>{{ props.row.roleName }}</span>
                         </el-form-item>
                     </el-form>
                 </template>
-            </el-table-column>
-            <el-table-column
-                type="selection"
-                width="70">
             </el-table-column>
             <el-table-column
                 label="员工编号"
@@ -77,85 +62,80 @@
             <el-table-column label="操作" width="150">
                 <template scope="scope">
                     <el-button size="small"
-                               @click="handleEdit(scope.$index, scope.row)">修改
+                               @click="handleEdit(scope.row)">修改
                     </el-button>
                     <el-button size="small" type="danger"
-                               @click="isDelete">删除
+                               @click="handleDelete(scope.row.staffId)">删除
                     </el-button>
                 </template>
             </el-table-column>
         </el-table>
-        <div class="pagination" v-if="twoHide">
+        <div class="pagination">
             <el-pagination
-                layout="prev, pager, next"
-                :total="1000">
+                @current-change="handleCurrentChange"
+                :current-page="currentPage"
+                :page-size="pageSize"
+                layout="total, prev, pager, next"
+                :total="totalPage">
             </el-pagination>
         </div>
-
-        <el-breadcrumb separator="/" v-if="!twoHide">
-            <el-breadcrumb-item>{{tableData[0].staffDep}}</el-breadcrumb-item>
-            <el-breadcrumb-item>{{tableData[0].staffName}}</el-breadcrumb-item>
-        </el-breadcrumb>
-        <div class="div-block" v-if="!twoHide">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                <el-form-item label="员工姓名" prop="staffName">
+        <el-dialog title="修改员工信息" v-model="dialogFormVisible">
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
+                <el-form-item label="员工姓名" :label-width="formLabelWidth">
                     <el-input style="width: 60%;" v-model="ruleForm.staffName"></el-input>
                 </el-form-item>
-                <el-form-item label="性别" prop="staffSex">
-                    <el-select v-model="ruleForm.staffSex" placeholder="请选择员工性别">
-                        <el-option label="男" value="male"></el-option>
-                        <el-option label="女" value="female"></el-option>
+                <el-form-item label="所属部门" :label-width="formLabelWidth">
+                    <el-select v-model="ruleForm.staffDepartment" placeholder="请选择所属部门">
+                        <el-option
+                            v-for="item in options"
+                            :key="item.label"
+                            :label="item.label"
+                            :value="item.label">
+                        </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="所属部门" prop="staffDep">
-                    <el-select v-model="ruleForm.staffDep" placeholder="请选择所属部门">
-                        <el-option label="人事处" value="PersonnelDivision"></el-option>
-                        <el-option label="财务处" value="FinancialDepartment"></el-option>
-                        <el-option label="软件工程学院" value="SoftwareEngineeringInstitute"></el-option>
-                        <el-option label="计算机学院" value="DepartmentOfComputerScience"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="职称" prop="staffTitle">
+                <el-form-item label="职称" :label-width="formLabelWidth">
                     <el-select v-model="ruleForm.staffTitle" placeholder="请选择员工职称">
-                        <el-option label="教授" value="professor"></el-option>
-                        <el-option label="副教授" value="associateProfessor"></el-option>
-                        <el-option label="讲师" value="lecturer"></el-option>
-                        <el-option label="副教授" value="associateProfessor"></el-option>
-                        <el-option label="校长" value="Principal"></el-option>
-                        <el-option label="副校长" value="associateProfessor"></el-option>
+                        <el-option label="教授" value="教授"></el-option>
+                        <el-option label="副教授" value="副教授"></el-option>
+                        <el-option label="讲师" value="讲师"></el-option>
+                        <el-option label="助教" value="助教"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="职务" prop="staffDuty">
+                <el-form-item label="职务" :label-width="formLabelWidth">
                     <el-select v-model="ruleForm.staffDuty" placeholder="请选择员工职务">
-                        <el-option label="人事处管理员" value="personnelManager"></el-option>
-                        <el-option label="财务处管理员" value="financeManager"></el-option>
-                        <el-option label="部门管理员" value="departManager"></el-option>
-                        <el-option label="普通教职工" value="teachingStaff"></el-option>
+                        <el-option label="校长" value="校长"></el-option>
+                        <el-option label="副校长" value="副校长"></el-option>
+                        <el-option label="处长" value="处长"></el-option>
+                        <el-option label="副处长" value="副处长"></el-option>
+                        <el-option label="图书馆馆长" value="图书馆馆长"></el-option>
+                        <el-option label="系主任" value="系主任"></el-option>
+                        <el-option label="无职务" value="无职务"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="入职时间" required>
-                    <el-col :span="11">
-                        <el-form-item prop="entryTime">
-                            <el-date-picker type="date" placeholder="选择入职日期" v-model="ruleForm.entryTime"
-                                            style="width: 85%;"></el-date-picker>
-                        </el-form-item>
-                    </el-col>
+                <el-form-item label="系统角色" :label-width="formLabelWidth">
+                    <el-select v-model="ruleForm.staffRole" placeholder="请选择员工角色">
+                        <el-option label="财务处管理员" value="财务处管理员"></el-option>
+                        <el-option label="人事处管理员" value="人事处管理员"></el-option>
+                        <el-option label="部门管理员" value="部门管理员"></el-option>
+                        <el-option label="普通教职工" value="普通教职工"></el-option>
+                    </el-select>
                 </el-form-item>
-                <el-form-item label="身份证号" prop="identityNum">
+                <el-form-item label="身份证号" :label-width="formLabelWidth">
                     <el-input style="width: 60%;" v-model="ruleForm.identityNum"></el-input>
                 </el-form-item>
-                <el-form-item label="银行卡号" prop="bankAcount">
+                <el-form-item label="银行卡号" :label-width="formLabelWidth">
                     <el-input style="width: 60%;" v-model="ruleForm.bankAcount"></el-input>
                 </el-form-item>
-                <el-form-item label="联系电话" prop="phoneNum">
+                <el-form-item label="联系电话" :label-width="formLabelWidth">
                     <el-input style="width: 60%;" v-model="ruleForm.phoneNum"></el-input>
                 </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="submitForm('ruleForm')">确认修改</el-button>
-                    <el-button @click="resetForm('ruleForm')">重置</el-button>
-                </el-form-item>
             </el-form>
-        </div>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="updateStaffInfo()">确 定</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -197,27 +177,15 @@
 
 <script>
     import axios from 'axios';
-
+    import qs from 'qs';
+    import {getCookie, formatDateTime} from '../../assets/common/VueUtils.js';
     export default {
         data() {
             return {
                 staffInfoSearch: '',
-                currentPage: 0,
-                pageSize: 8,
-                oneHide: true,
-                twoHide: true,
-                activeName: 'first',
-                ruleForm: {
-                    staffName: '蔡明',
-                    staffSex: '男',
-                    staffDep: '计算机学院',
-                    staffTitle: '教授',
-                    staffDuty: '普通教职工',
-                    entryTime: '2009.05.06',
-                    identityNum: '510231198603024682',
-                    bankAcount: '6217253100003034123',
-                    phoneNum: '18408652351'
-                },
+                currentPage: 1,
+                pageSize: 6,
+                totalPage: 0,
                 rules: {
                     staffName: [
                         {required: true, message: '请输入员工姓名', trigger: 'blur'},
@@ -251,55 +219,136 @@
                         {length: 11, message: '长度为11位数字', trigger: 'blur'}
                     ]
                 },
-                staffListData: []
+                formLabelWidth: '120px',
+                dialogFormVisible: false,
+                staffListData: [],
+                ruleForm: {
+                    staffId: '',
+                    staffName: '',
+                    staffSex: '',
+                    staffDepartment: '',
+                    staffTitle: '',
+                    staffDuty: '',
+                    staffRole: '',
+                    entryTime: '',
+                    identityNum: '',
+                    bankAcount: '',
+                    phoneNum: ''
+                },
+                rules: {
+                    staffName: [
+                        {required: true, message: '请输入员工姓名', trigger: 'blur'},
+                        {min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur'}
+                    ],
+                    staffSex: [
+                        {required: true, message: '请选择员工性别', trigger: 'change'}
+                    ],
+                    staffDepartment: [
+                        {required: true, message: '请选择员工所属部门', trigger: 'change'}
+                    ],
+                    staffTitle: [
+                        {required: true, message: '请选择员工职称', trigger: 'change'}
+                    ],
+                    staffDuty: [
+                        {required: true, message: '请选择员工职务', trigger: 'change'}
+                    ],
+                    staffRole: [
+                        {required: true, message: '请选择员工角色', trigger: 'change'}
+                    ],
+                    entryTime: [
+                        {type: 'date', required: true, message: '请选择入职日期', trigger: 'change'}
+                    ],
+                    identityNum: [
+                        {required: true, message: '请输入员工身份证号', trigger: 'blur'},
+                        {length: 18, message: '长度为18位数字', trigger: 'blur'}
+                    ],
+                    bankAcount: [
+                        {required: true, message: '请输入员工银行卡号', trigger: 'blur'},
+                        {length: 18, message: '长度为18位数字', trigger: 'blur'}
+                    ],
+                    phoneNum: [
+                        {required: true, message: '请输入员工电话号码', trigger: 'blur'},
+                        {length: 11, message: '长度为11位数字', trigger: 'blur'}
+                    ]
+                },
+                options: [{
+                    value: 'Dep_preOffice',
+                    label: '校长办公室'
+                }, {
+                    value: 'Dep_parOffice',
+                    label: '党委办公室'
+                }, {
+                    value: 'Dep_persDiv',
+                    label: '人事处'
+                }, {
+                    value: 'Dep_deanDiv',
+                    label: '教务处'
+                }, {
+                    value: 'Dep_reseaDiv',
+                    label: '科研处'
+                }, {
+                    value: 'Dep_finaDiv',
+                    label: '财务处'
+                }, {
+                    value: 'Dep_auditDiv',
+                    label: '审计处'
+                }, {
+                    value: 'Dep_stuDiv',
+                    label: '学生工作处'
+                }, {
+                    value: 'Dep_library',
+                    label: '图书馆'
+                }, {
+                    value: 'Dep_labolUni',
+                    label: '工会'
+                }, {
+                    value: 'Dep_compuDep',
+                    label: '计算机系'
+                }, {
+                    value: 'Dep_commuDep',
+                    label: '通信工程系'
+                }, {
+                    value: 'Dep_atmosDep',
+                    label: '大气科学系'
+                }, {
+                    value: 'Dep_elecDep',
+                    label: '电子信息系'
+                }, {
+                    value: 'Dep_soWareDep',
+                    label: '软件工程系'
+                }, {
+                    value: 'Dep_culArtDep',
+                    label: '文化艺术系'
+                }, {
+                    value: 'Dep_manaDep',
+                    label: '管理系'
+                }, {
+                    value: 'Dep_mathDep',
+                    label: '数学系'
+                }]
             }
         },
         created: function () {
-//            this.getStaffList(staffInfoSearch, currentPage, pageSize);
-            const self = this;
-            axios.get('http://139.224.129.108:8089/staffInfo/staffList', {
-                params: {
-                    currentPage: self.currentPage,
-                    pageSize: self.pageSize
-                }
-            }).then(function (response) {
-                console.log(response);
-                if (response.data.code == 1) {
-                    self.$notify.error({
-                        title: '操作失败',
-                        message: response.data.message
-                    });
-                } else {
-                    var staffList = response.data.data;
-                    if (staffList != null) {
-                        self.staffListData = staffList;
-                    }
-                }
-            }).catch(function (error) {
-                console.log(error);
-            });
+            this.getStaffList(this.staffInfoSearch, this.currentPage, this.pageSize);
         },
         methods: {
             getStaffList(staffInfoSearch, currentPage, pageSize){
-                const self = this;
-                axios.get('http://139.224.129.108:8089/staffInfo/staffList', {
+                axios.get('http://lalala.tunnel.2bdata.com/staffInfo/staffList', {
                     params: {
                         staffInfoSearch: staffInfoSearch,
                         currentPage: currentPage,
                         pageSize: pageSize
                     }
-                }).then(function (response) {
+                }).then((response) => {
                     console.log(response);
                     if (response.data.code == 1) {
-                        self.$notify.error({
+                        this.$notify.error({
                             title: '操作失败',
-                            message: response.data.message
+                            message: '服务端出错啦~'
                         });
                     } else {
-                        var staffList = response.data.data;
-                        if (staffList != null) {
-                            self.staffListData = staffList;
-                        }
+                        this.staffListData = response.data.data.staffInfoViews;
+                        this.totalPage = response.data.data.total;
                     }
                 }).catch(function (error) {
                     console.log(error);
@@ -308,55 +357,96 @@
             handleSearchClick(ev) {
                 this.getStaffList(this.staffInfoSearch, this.currentPage, this.pageSize);
             },
-            handleClick(tab, event) {
-                console.log(tab, event);
+            handleEdit(row) {
+                this.ruleForm.staffId = row.staffId;
+                this.ruleForm.staffName = row.staffName;
+                this.ruleForm.staffSex = row.staffSex;
+                this.ruleForm.staffDuty = row.dutyName;
+                this.ruleForm.staffTitle = row.titleName;
+                this.ruleForm.entryTime = row.staffEntryTime;
+                this.ruleForm.staffDepartment = row.departmentName;
+                this.ruleForm.staffRole = row.roleName;
+                this.ruleForm.identityNum = row.staffIdentityNum;
+                this.ruleForm.bankAcount = row.staffBankAcount;
+                this.ruleForm.phoneNum = row.staffTel;
+                this.dialogFormVisible = true;
             },
-            handleSelectionChange(val) {
-                this.multipleSelection = val;
+            updateStaffInfo(){
+                this.dialogFormVisible = false;
+                axios.post('http://lalala.tunnel.2bdata.com/staffInfo/updateStaffInfo', qs.stringify({
+                    staffId: this.ruleForm.staffId,
+                    staffName: this.ruleForm.staffName,
+                    staffSex: this.ruleForm.staffSex,
+                    staffIdentityNum: this.ruleForm.identityNum,
+                    departmentId: this.ruleForm.staffDepartment,
+                    titleId: this.ruleForm.staffTitle,
+                    dutyId: this.ruleForm.staffDuty,
+                    staffEntryTime: this.ruleForm.entryTime,
+                    staffBankAcount: this.ruleForm.bankAcount,
+                    staffTel: this.ruleForm.phoneNum,
+                    roleId: this.ruleForm.staffRole
+                })).then(response => {
+                    console.log(response);
+                    if (response.data.code == 1) {
+                        this.$notify.error({
+                            title: '操作失败',
+                            message: response.data.message
+                        });
+                    } else {
+                        this.$message({
+                            message: '调整成功',
+                            type: 'success'
+                        });
+                        this.getStaffList(this.staffInfoSearch, this.currentPage, this.pageSize);
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
             },
-            formatter(row, column) {
-                return row.address;
+            handleDelete(id) {
+                this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.post('http://lalala.tunnel.2bdata.com/staffInfo/deleteStaffInfo', qs.stringify({
+                        staffId: id
+                    })).then(response => {
+                        console.log(response);
+                        if (response.data.code == 1) {
+                            this.$notify.error({
+                                title: '操作失败',
+                                message: response.data.message
+                            });
+                        } else {
+                            this.$message({
+                                message: '删除成功',
+                                type: 'success'
+                            });
+                            this.getStaffList(this.staffInfoSearch, this.currentPage, this.pageSize);
+                        }
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val;
+                this.getStaffList(this.staffInfoSearch, this.currentPage, this.pageSize);
             },
             filterTit(value, row) {
                 return row.staffTitle === value;
-            },
-            handleEdit(index, row) {
-                this.$message('修改第' + (index + 1) + '行');
-                this.twoHide = false;
-            },
-            handleDelete(index, row) {
-                this.$message.error('删除第' + (index + 1) + '行');
-            },
-            oneHandleEdit(index, row) {
-                this.$message('管理第' + (index + 1) + '行');
-                this.oneHide = false;
-
-            },
-            oneHandleDelete(index, row) {
-                this.$message.error('删除第' + (index + 1) + '行');
             },
             filterDep(value, row) {
                 return row.departmentName === value;
             },
             filterDuty(value, row) {
                 return row.dutyName === value;
-            },
-            isDelete() {
-                this.$confirm('删除‘计算机学院成员：蔡明’, 是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    this.$message({
-                        type: 'success',
-                        message: '删除成功!'
-                    });
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '取消删除'
-                    });
-                });
             }
         }
     }

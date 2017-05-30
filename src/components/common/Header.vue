@@ -9,6 +9,7 @@
                 </span>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item command="loginout">退出</el-dropdown-item>
+                    <el-dropdown-item command="modifyPassWord">修改密码</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
         </div>
@@ -16,6 +17,9 @@
 </template>
 
 <script>
+    import axios from 'axios';
+    import qs from 'qs';
+    import {getCookie, formatDateTime} from '../../assets/common/VueUtils.js'
     export default {
         data() {
             return {
@@ -33,6 +37,9 @@
                 if(command == 'loginout'){
                     localStorage.removeItem('ms_username')
                     this.$router.push('/login');
+                }else if(command == 'modifyPassWord'){
+                    localStorage.removeItem('ms_username')
+                    this.$router.push('/changePwd');
                 }
             }
         }

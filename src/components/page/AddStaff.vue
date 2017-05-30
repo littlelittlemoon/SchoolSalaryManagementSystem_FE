@@ -62,7 +62,7 @@
             <el-form-item label="入职时间" required>
                 <el-col :span="11">
                     <el-form-item prop="entryTime">
-                        <el-date-picker type="date" placeholder="选择入职日期" v-model="ruleForm.entryTime"
+                        <el-date-picker format="yyyy-MM-dd" type="date" placeholder="选择入职日期" v-model="ruleForm.entryTime"
                                         style="width: 85%;"></el-date-picker>
                     </el-form-item>
                 </el-col>
@@ -142,30 +142,29 @@
         },
         methods: {
             submitForm(formName) {
-                const self = this;
-                self.$refs[formName].validate((valid) => {
+                this.$refs[formName].validate((valid) => {
                         if (valid) {
                             axios.post('http://139.224.129.108:8089/staffInfo/addStaff',qs.stringify(
                                {
-                                    staffName: self.ruleForm.staffName,
-                                    staffSex: self.ruleForm.staffSex,
-                                    departmentId: self.ruleForm.staffDepartment,
-                                    titleId: self.ruleForm.staffTitle,
-                                    dutyId: self.ruleForm.staffDuty,
-                                    roleId: self.ruleForm.staffRole,
-                                    staffEntryTime: self.ruleForm.entryTime,
-                                    staffIdentityNum: self.ruleForm.identityNum,
-                                    staffBankAcount: self.ruleForm.bankAcount,
-                                    staffTel: self.ruleForm.phoneNum
-                            })).then(function (response) {
+                                    staffName: this.ruleForm.staffName,
+                                    staffSex: this.ruleForm.staffSex,
+                                    departmentId: this.ruleForm.staffDepartment,
+                                    titleId: this.ruleForm.staffTitle,
+                                    dutyId: this.ruleForm.staffDuty,
+                                    roleId: this.ruleForm.staffRole,
+                                    staffEntryTime: this.formatDateTime(this.ruleForm.entryTime),
+                                    staffIdentityNum: this.ruleForm.identityNum,
+                                    staffBankAcount: this.ruleForm.bankAcount,
+                                    staffTel: this.ruleForm.phoneNum
+                            })).then(response => {
                                 console.log(response);
                                 if (response.data.code == 1) {
-                                    self.$notify.error({
+                                    this.$notify.error({
                                         title: '操作失败',
                                         message: response.data.message
                                     });
                                 } else {
-                                    self.$router.push('/ManageStaffInfo');
+                                    this.$router.push('/ManageStaffInfo');
                                 }
                             }).catch(function (error) {
                                 console.log(error);
@@ -178,7 +177,16 @@
                 );
             },
             resetForm(formName) {
-                self.$refs[formName].resetFields();
+                this.$refs[formName].resetFields();
+            },
+            formatDateTime(date) {
+                var y = date.getFullYear();
+                var m = date.getMonth() + 1;
+                m = m < 10 ? ('0' + m) : m;
+                var d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+
+                return y + '-' + m + '-' + d;
             }
         }
     }

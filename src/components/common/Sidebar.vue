@@ -7,6 +7,9 @@
             <el-submenu index="2">
                 <template slot="title"><i class="el-icon-menu"></i>(财务处)工资发放管理</template>
                 <el-menu-item index="ManageSalary">(财务处)工资管理</el-menu-item>
+                <el-menu-item index="ModifyTaxRule">(财务处)管理扣税规则</el-menu-item>
+                <el-menu-item index="ModifyInsuranceRule">(财务处)管理五险一金扣除规则</el-menu-item>
+                <el-menu-item index="ModifyAbsenceRule">(财务处)管理缺勤扣除规则</el-menu-item>
                 <el-menu-item index="HistorySalary">(财务处)历史工资记录</el-menu-item>
             </el-submenu>
             <el-submenu index="3">
@@ -23,15 +26,15 @@
             </el-submenu>
             <el-submenu index="5">
                 <template slot="title"><i class="el-icon-star-on"></i>工资信息</template>
-                <el-menu-item index="SalaryInfo">(员工)查看历史工资信息</el-menu-item>
+                <el-menu-item index="StaffHistorySalary">(员工)查看历史工资信息</el-menu-item>
                 <!--<el-menu-item index="mixcharts"></el-menu-item>-->
             </el-submenu>
             <el-submenu index="6">
                 <template slot="title"><i class="el-icon-star-on"></i>考勤管理</template>
-                <el-menu-item index="DepCheckInfo">(各部门)考勤管理</el-menu-item>
-
-                <el-menu-item index="CheckInfo">(员工)查看考勤信息</el-menu-item>
                 <el-menu-item index="ApplicationForLeave">(员工)请假申请</el-menu-item>
+                <el-menu-item index="DepCheckInfo">(各部门)考勤管理</el-menu-item>
+                <el-menu-item index="StaffCheckInfo">(员工)查看历史考勤记录</el-menu-item>
+                <el-menu-item index="ApplicationList">(员工)查看当月考勤申请</el-menu-item>
             </el-submenu>
         </el-menu>
     </div>

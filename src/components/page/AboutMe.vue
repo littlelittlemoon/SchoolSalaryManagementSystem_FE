@@ -8,23 +8,35 @@
         <div class="ms-doc">
             <h3>学校工资管理系统（SSMS）</h3>
             <article>
-                <h1>学校工资管理系统（SSMS）</h1>
-
-                <h2>功能模块</h2>
-
-                <el-checkbox disabled checked>登录/注销</el-checkbox>
-                <br>
-                <el-checkbox disabled checked>用户管理</el-checkbox>
-                <br>
-                <el-checkbox disabled checked>考勤管理</el-checkbox>
-                <br>
-                <el-checkbox disabled checked>工资管理</el-checkbox>
-                <br>
-                <el-checkbox disabled checked>工资表管理</el-checkbox>
-                <br>
-                <el-checkbox disabled checked>薪资标准管理</el-checkbox>
-                <br>
-
+                <el-form :model="personalInfo" label-width="100px" class="demo-ruleForm">
+                    <el-form-item label="姓名" prop="staffName">
+                        <el-input disabled style="width: 60%;" v-model="personalInfo.staffName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="性别" prop="staffSex">
+                        <el-input disabled style="width: 60%;" v-model="personalInfo.staffSex"></el-input>
+                    </el-form-item>
+                    <el-form-item label="所属部门" prop="departmentName">
+                        <el-input disabled style="width: 60%;" v-model="personalInfo.departmentName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="职称" prop="staffTitle">
+                        <el-input disabled style="width: 60%;" v-model="personalInfo.titleName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="职务" prop="staffDuty">
+                        <el-input disabled style="width: 60%;" v-model="personalInfo.dutyName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="入职时间">
+                        <el-input disabled style="width: 60%;" v-model="personalInfo.entryTime"></el-input>
+                    </el-form-item>
+                    <el-form-item label="身份证号" prop="identityNum">
+                        <el-input disabled style="width: 60%;" v-model="personalInfo.identityNum"></el-input>
+                    </el-form-item>
+                    <el-form-item label="银行卡号" prop="bankAcount">
+                        <el-input disabled style="width: 60%;" v-model="personalInfo.bankAcount"></el-input>
+                    </el-form-item>
+                    <el-form-item label="联系电话" prop="phoneNum">
+                        <el-input disabled style="width: 60%;" v-model="personalInfo.telNum"></el-input>
+                    </el-form-item>
+                </el-form>
             </article>
         </div>
 
@@ -34,7 +46,19 @@
 <script>
     export default {
         data: function(){
-            return {}
+            return {
+                personalInfo:{
+                    staffName: '谭凯悦',
+                    staffSex: '女',
+                    departmentName: '计算机学院',
+                    titleName: '教授',
+                    dutyName: '部门管理员',
+                    entryTime: '2008-12-19',
+                    identityNum: '5112587895454558525',
+                    bankAcount:'6258445522225844525',
+                    telNum: '15846885255'
+                }
+            }
         }
     }
 </script>
