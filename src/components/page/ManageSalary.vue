@@ -100,7 +100,7 @@
                 isShow: true,
                 send: '发送工资单到银行',
                 isSend: false,
-                depId: '',
+                depId: 'Dep_compuDep',
                 salaryList: [],
                 toBankSalaryList: [],
                 canSendToBank: true,
@@ -162,6 +162,9 @@
                 }]
             };
         },
+        created: function(){
+            this.getSalaryData(this.depId);
+        },
         methods: {
             getSummaries(param) {
                 const {columns, data} = param;
@@ -196,7 +199,7 @@
             },
             getSalaryData(departmentId)
             {
-                axios.get('http://lalala.tunnel.2bdata.com/salary/checkSalaryList', {
+                axios.get('http://localhost:8080/salary/checkSalaryList', {
                     params: {
                         departmentId: departmentId
                     }
@@ -238,7 +241,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post('http://lalala.tunnel.2bdata.com/salary/sendToBank', qs.stringify({
+                    axios.post('http://localhost:8080/salary/sendToBank', qs.stringify({
                         departmentId: this.depId
                     })).then(response => {
                         console.log(response);
@@ -277,7 +280,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post('http://lalala.tunnel.2bdata.com/salary/sendToDepartment', qs.stringify({
+                    axios.post('http://localhost:8080/salary/sendToDepartment', qs.stringify({
                         departmentId: this.depId
                     })).then(response => {
                         console.log(response);
@@ -307,24 +310,6 @@
                     this.isSend = false;
                     this.isShow = true;
                     this.getSalaryData(this.depId);
-                });
-            },
-            isPrint(){
-                this.$confirm('是否生成工资单, 是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    this.$message({
-                        type: 'success',
-                        message: '生成成功!',
-                        hide: false
-                    });
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消生成'
-                    });
                 });
             }
         }

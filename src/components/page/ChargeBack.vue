@@ -1,5 +1,11 @@
 <template>
     <div>
+        <div class="crumbs">
+            <el-breadcrumb separator=">>">
+                <el-breadcrumb-item><i></i>工资管理</el-breadcrumb-item>
+                <el-breadcrumb-item><i></i>{{newTitle}}</el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
         <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="待处理" name="first" style="position: relative;">
                 <el-input
@@ -400,6 +406,7 @@
         data() {
             return {
                 activeName: 'first',
+                newTitle: '审核考勤信息',
                 pane1: {
                     currentPage: 1,
                     pageSize: 6,
@@ -533,7 +540,7 @@
                 this.getTaxResult(this.pane4.searchCondition, this.pane4.currentPage, this.pane4.pageSize, this.depId);
             },
             /**
-             * 所属部门
+             * 获取某部门的考勤信息
              * */
             getAbsentData(searchCondition, currentPage, pageSize, departmentId){
                 axios.get('http://localhost:8080/absentInfo/hrCheckAbsentInfo', {
@@ -558,6 +565,14 @@
                     console.log(error);
                 });
             },
+//            canCountAbsentMoney(status, column){
+//                console.log("++++++++++++++++++++++++++" + status);
+//                if(status == 'dtp'){
+//                    return true;
+//                }else{
+//                    return false;
+//                }
+//            },
             handleEdit1(index, row) {
                 this.$message('管理第' + (index + 1) + '行');
                 this.oneHide = false;
@@ -566,12 +581,16 @@
             handleClick(tab, event) {
                 //切换tabs时触发
                 if (this.activeName == 'first') {
+                    this.newTitle = '审核考勤信息';
                     this.getAbsentData(this.pane1.searchCondition, this.pane1.currentPage, this.pane1.pageSize, this.depId);
                 } else if (this.activeName == 'second') {
+                    this.newTitle = '管理缺勤扣款';
                     this.getAbsentMoneyResult(this.pane2.searchCondition, this.pane2.currentPage, this.pane2.pageSize, this.depId);
                 } else if (this.activeName == 'third') {
+                    this.newTitle = '管理五险一金扣款';
                     this.getInsuranceResult(this.pane3.searchCondition, this.pane3.currentPage, this.pane3.pageSize, this.depId);
                 } else {
+                    this.newTitle = '管理交税扣款';
                     this.getTaxResult(this.pane4.searchCondition, this.pane4.currentPage, this.pane4.pageSize, this.depId);
                 }
             },
@@ -581,7 +600,7 @@
                     this.pane1.staffIds.push(this.multipleSelection[i].staffId);
                 }
                 axios.post('http://localhost:8080/absentMoney/countAbsentMoney', qs.stringify({
-                    staffIds: JSON.stringify(this.pane3.staffIds)
+                    staffIds: JSON.stringify(this.pane1.staffIds)
                 })).then(response => {
                     console.log(response);
                     if (response.data.code == 1) {
@@ -748,7 +767,8 @@
                 for (let i in this.multipleSelection) {
                     this.pane3.staffIds.push(this.multipleSelection[i].staffId);
                 }
-                axios.post('http://lalala.tunnel.2bdata.com/tax/countTaxMoney', qs.stringify({
+                axios.post('http://localhost:8080/tax/countTaxMoney', qs.stringify({
+
                     staffIds: JSON.stringify(this.pane3.staffIds)
                 })).then(response => {
                     console.log(response);
@@ -770,7 +790,7 @@
                 });
             },
             getTaxResult(searchCondition, currentPage, pageSize, departmentId){
-                axios.get('http://lalala.tunnel.2bdata.com/tax/taxMoneyResult', {
+                axios.get('http://localhost:8080/tax/taxMoneyResult', {
                     params: {
                         currentPage: currentPage,
                         pageSize: pageSize,
@@ -800,7 +820,7 @@
             },
             updateTaxMoney(){
                 this.pane4.dialogFormVisible = false;
-                axios.post('http://lalala.tunnel.2bdata.com/tax/updateTaxMoney', qs.stringify({
+                axios.post('http://localhost:8080/tax/updateTaxMoney', qs.stringify({
                     staffId: this.changeData3.staffId,
                     taxTime: this.changeData3.checkTime,
                     taxMoney: this.changeData3.taxMoney
@@ -823,7 +843,7 @@
                 });
             },
             sendToFs(){
-                axios.post('http://lalala.tunnel.2bdata.com/tax/sendToFs', qs.stringify({
+                axios.post('http://localhost:8080/tax/sendToFs', qs.stringify({
                     departmentId: this.depId
                 })).then(response => {
                     console.log(response);

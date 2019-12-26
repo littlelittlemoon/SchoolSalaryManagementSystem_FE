@@ -185,7 +185,7 @@
                 if (selMonth != '') {
                     time = formatDateTime(selMonth).substring(0, 7);
                 }
-                axios.get('http://lalala.tunnel.2bdata.com/salary/historySalaryList', {
+                axios.get('http://localhost:8080/salary/historySalaryList', {
                     params: {
                         currentPage: currentPage,
                         pageSize: pageSize,

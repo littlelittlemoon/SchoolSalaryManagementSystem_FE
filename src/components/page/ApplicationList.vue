@@ -1,5 +1,11 @@
 <template>
     <div>
+        <div class="crumbs">
+            <el-breadcrumb separator=">>">
+                <el-breadcrumb-item><i></i>考勤管理</el-breadcrumb-item>
+                <el-breadcrumb-item><i></i>查看当月考勤记录</el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
         <el-table
             :data="applyListData"
             border
@@ -35,7 +41,8 @@
                 { text: '待部门审核', value: '待部门审核' },
                 { text: '待人事处审核', value: '待人事处审核' },
                 { text: '部门打回', value: '部门打回' },
-                { text: '已统计', value: '已统计' }]"
+                { text: '已统计', value: '已统计' },
+                { text: '已撤回', value: '已撤回' }]"
                 :filter-method="filterStatus">
                 <template scope="scope">
                     <el-tag
@@ -48,6 +55,14 @@
                 prop="absentCheckTime"
                 label="审核时间"
                 sortable>
+            </el-table-column>
+            <el-table-column
+                label="操作">
+                <template scope="scope">
+                    <el-button size="mini" type="info" :disabled="canTurnBack(scope.row.absentState)"
+                               @click="turnBack(scope.row.absentStartTime)">撤销申请
+                    </el-button>
+                </template>
             </el-table-column>
 
         </el-table>
@@ -79,25 +94,27 @@
             }
         },
         created: function () {
-            this.getData(1)
+            this.getData(this.currentPage);
         },
         methods: {
             tabColor(status){
-                if(status == '待部门审核'){
+                if (status == '待部门审核') {
                     return 'warning';
-                }else if(status == '部门通过'){
+                } else if (status == '部门通过') {
                     return 'success';
-                }else if(status == '待人事处审核'){
+                } else if (status == '待人事处审核') {
                     return 'primary';
-                }else if(status == '已统计'){
-                    return 'blue';
-                }else{
+                } else if (status == '已统计') {
+                    return '';
+                } else if (status == '已撤回') {
+                    return 'gray';
+                } else {
                     return 'danger';
                 }
             },
             getData(currentPage){
                 const self = this;
-                axios.get('http://139.224.129.108:8089/absentInfo/absentInfoList', {
+                axios.get('http://localhost:8080/absentInfo/absentInfoList', {
                     params: {
                         currentPage: currentPage,
                         pageSize: self.pageSize,
@@ -111,16 +128,53 @@
                             message: response.data.message
                         });
                     } else {
-                        var applyList = response.data.data.absentInfos;
+                        this.applyListData = response.data.data.absentInfos;
                         this.totalPage = response.data.data.total;
-                        this.currentPage = response.data.data.currentPage;
-                        if (applyList != null) {
-                            this.applyListData = applyList;
-                        }
                     }
                 }).catch(function (error) {
                     console.log(error);
                 });
+            },
+            canTurnBack(absentState){
+                if (absentState == '待部门审核') {
+                    return false;
+                } else {
+                    return true;
+                }
+            },
+            turnBack(startTime){
+                this.$confirm('撤回请假申请, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.post('http://localhost:8080/absentInfo/turnBack', qs.stringify({
+                        staffId: getCookie("staffId"),
+                        absentStartTime: startTime
+                    })).then(response => {
+                        console.log(response);
+                        if (response.data.code == 1) {
+                            this.$notify.error({
+                                title: '操作失败',
+                                message: '啊偶，服务器出错啦~'
+                            });
+                        } else {
+                            this.$message({
+                                message: '撤回成功！',
+                                type: 'success'
+                            });
+                            this.getData(this.currentPage);
+                        }
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消撤回！'
+                    });
+                });
+
             },
             filterStatus(value, row) {
                 return row.absentState === value;

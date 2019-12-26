@@ -7,15 +7,14 @@
                     <img class="user-logo" src="../../../static/img/img.jpg">
                     {{username}}
                 </span>
-                <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="loginout">退出</el-dropdown-item>
-                    <el-dropdown-item command="modifyPassWord">修改密码</el-dropdown-item>
+                <el-dropdown-menu class="el-dropdown-menu" slot="dropdown">
+                    <el-dropdown-item class="el-dropdown-menu__item"  command="loginout">退出</el-dropdown-item>
+                    <el-dropdown-item class="el-dropdown-menu__item"  command="modifyPassWord">修改密码</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
         </div>
     </div>
 </template>
-
 <script>
     import axios from 'axios';
     import qs from 'qs';
@@ -26,19 +25,19 @@
                 name: 'tantan'
             }
         },
-        computed:{
+        computed: {
             username(){
-                let username = localStorage.getItem('ms_username');
+                let username = localStorage.getItem('username');
                 return username ? username : this.name;
             }
         },
-        methods:{
+        methods: {
             handleCommand(command) {
-                if(command == 'loginout'){
-                    localStorage.removeItem('ms_username')
+                if (command == 'loginout') {
+                    localStorage.removeItem('username')
                     this.$router.push('/login');
-                }else if(command == 'modifyPassWord'){
-                    localStorage.removeItem('ms_username')
+                } else if (command == 'modifyPassWord') {
+                    localStorage.removeItem('username')
                     this.$router.push('/changePwd');
                 }
             }
@@ -55,18 +54,21 @@
         line-height: 70px;
         color: #fff;
     }
-    .header .logo{
+
+    .header .logo {
         float: left;
-        width:250px;
+        width: 250px;
         text-align: center;
     }
+
     .user-info {
         float: right;
         padding-right: 50px;
         font-size: 16px;
         color: #fff;
     }
-    .user-info .el-dropdown-link{
+
+    .user-info .el-dropdown-link {
         position: relative;
         display: inline-block;
         padding-left: 50px;
@@ -74,15 +76,21 @@
         cursor: pointer;
         vertical-align: middle;
     }
-    .user-info .user-logo{
+
+    .user-info .user-logo {
         position: absolute;
-        left:0;
-        top:15px;
-        width:40px;
-        height:40px;
+        left: 0;
+        top: 15px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
     }
-    .el-dropdown-menu__item{
+
+    .el-dropdown-menu{
+        width: 150px;
+    }
+
+    .el-dropdown-menu__item {
         text-align: center;
     }
 </style>

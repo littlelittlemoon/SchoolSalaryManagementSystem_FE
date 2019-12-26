@@ -9,7 +9,7 @@
         <div class="div-block">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
                 <el-form-item label="请假类型" required prop="absentType">
-                    <el-select v-model="ruleForm.absentType" placeholder="请假类型" >
+                    <el-select v-model="ruleForm.absentType" placeholder="请假类型">
                         <el-option v-for="item in ruleForm.items" :value="item"></el-option>
                     </el-select>
                 </el-form-item>
@@ -22,14 +22,14 @@
                     </el-col>
                     <el-col class="line" :span="2">-</el-col>
                     <el-col :span="11">
-                        <el-form-item prop="absentEndTime">
+                        <el-form-item prop="absentEndTime" @change="dateChange">
                             <el-date-picker type="date" placeholder="请假结束时间" v-model="ruleForm.absentEndTime"
-                                            style="width: 80%;"></el-date-picker>
+                                            style="width: 80%;" @change="dateChange"></el-date-picker>
                         </el-form-item>
                     </el-col>
                 </el-form-item>
                 <el-form-item label="请假天数" style="width: 92%;" prop="absentDays">
-                    <el-input type="text" v-model="ruleForm.absentDays"></el-input>
+                    <el-input type="text" v-model="ruleForm.absentDays" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="请假原因" prop="absentReason" style="width: 92%;">
                     <el-input
@@ -55,7 +55,6 @@
     export default {
         data() {
             return {
-
                 ruleForm: {
                     items: [],
                     absentType: '',
@@ -81,11 +80,6 @@
                         required: true,
                         message: '请选择结束日期',
                         trigger: 'change'
-                    }],
-                    absentDays: [{
-                        required: true,
-                        message: '请假天数',
-                        trigger: 'blur'
                     }]
                 }
             };
@@ -94,8 +88,16 @@
             this.getAbsentType();
         },
         methods: {
+            dateChange(){
+                let days;
+                let end = new Date(this.ruleForm.absentEndTime).getTime();
+                let start = new Date(this.ruleForm.absentStartTime).getTime();
+                days = (end - start) / (60 * 1000 * 60 * 24);
+                this.ruleForm.absentDays = days+1;
+                console.log("++++++++++++" + days);
+            },
             getAbsentType(){
-                axios.get('http://lalala.tunnel.2bdata.com/absenceSetting/absentType').then(response => {
+                axios.get('http://localhost:8080/absenceSetting/absentType').then(response => {
                     console.log(response);
                     if (response.data.code == 1) {
                         self.$notify.error({
@@ -112,7 +114,7 @@
             submitForm(formname) {
                 this.$refs[formname].validate((valid) => {
                     if (valid) {
-                        axios.post('http://lalala.tunnel.2bdata.com/absentInfo/applyLeave', qs.stringify({
+                        axios.post('http://localhost:8080/absentInfo/applyLeave', qs.stringify({
                             staffId: getCookie("staffId"),
                             absentReason: this.ruleForm.absentType,
                             absentStartTime: formatDateTime(this.ruleForm.absentStartTime),
@@ -152,10 +154,6 @@
         border: 1px solid #eaeefb;
         border-radius: 4px;
         transition: .2s;
-    }
-
-    .item {
-        margin: 4px;
     }
 
     .left .el-tooltip__popper,

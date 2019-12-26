@@ -26,18 +26,7 @@ export default new Router({
                     path: '/HistorySalary',
                     component: resolve => require(['../components/page/HistorySalary.vue'], resolve)     // vue-datasource组件
                 },
-                {
-                    path: '/CountPrice',
-                    component: resolve => require(['../components/page/CountPrice.vue'], resolve)    // Vue-Quill-Editor组件
-                },
-                {
-                    path: '/CountInsurance',
-                    component: resolve => require(['../components/page/CountInsurance.vue'], resolve)     // Vue-Quill-Editor组件
-                },
-                {
-                    path: '/CountTax',
-                    component: resolve => require(['../components/page/CountTax.vue'], resolve)       // Vue-Core-Image-Upload组件
-                },
+
                 {
                     path: '/AddStaff',
                     component: resolve => require(['../components/page/AddStaff.vue'], resolve)   // vue-echarts-v3组件

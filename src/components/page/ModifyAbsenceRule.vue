@@ -22,7 +22,7 @@
             </el-table-column>
             <el-table-column
                 label="缺勤扣除比例"
-                prop="proportion">
+                prop="proportion" sortable>
             </el-table-column>
             <el-table-column
                 label="应到天数"
@@ -38,7 +38,7 @@
                     </el-tag>
                 </template>
             </el-table-column>
-            <el-table-column label="操作" width="225">
+            <el-table-column label="操作" width="235">
                 <template scope="scope">
                     <el-button
                         size="small"
@@ -64,7 +64,7 @@
                 <el-form-item label="缺勤类型" :label-width="formLabelWidth">
                     <el-input v-model="addData.absentType" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="缺勤扣除比例" :label-width="formLabelWidth">
+                <el-form-item label="缺勤扣除比例" :label-width="formLabelWidth" >
                     <el-input v-model="addData.proportion" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="应到天数" :label-width="formLabelWidth">
@@ -111,12 +111,12 @@
                     id: '',
                     absentType: '',
                     proportion: '',
-                    shouldDays: ''
+                    shouldDays: 21.75
                 },
                 addData: {
                     absentType: '',
                     proportion: '',
-                    shouldDays: ''
+                    shouldDays: 21.75
                 }
             }
         },
@@ -135,7 +135,7 @@
             },
             addAbsenceRule(){
                 this.dialogFormVisible1 = false;
-                axios.post('http://lalala.tunnel.2bdata.com/absenceSetting/add', qs.stringify({
+                axios.post('http://localhost:8080/absenceSetting/add', qs.stringify({
                     absentType: this.addData.absentType,
                     proportion: this.addData.proportion,
                     shouldDays: this.addData.shouldDays
@@ -161,7 +161,7 @@
                 this.dialogFormVisible1 = true;
             },
             getAbsenceRuleData(){
-                axios.get('http://lalala.tunnel.2bdata.com/absenceSetting/list').then(response => {
+                axios.get('http://localhost:8080/absenceSetting/list').then(response => {
                     console.log(response);
                     if (response.data.code == 1) {
                         self.$notify.error({
@@ -184,7 +184,7 @@
             },
             updateAbsenceRule(){
                 this.dialogFormVisible = false;
-                axios.post('http://lalala.tunnel.2bdata.com/absenceSetting/update', qs.stringify({
+                axios.post('http://localhost:8080/absenceSetting/update', qs.stringify({
                     id: this.changeData.id,
                     absentType: this.changeData.absentType,
                     proportion: this.changeData.proportion,
@@ -213,7 +213,7 @@
                 } else {
                     status = 'enable';
                 }
-                axios.post('http://lalala.tunnel.2bdata.com/absenceSetting/update', qs.stringify({
+                axios.post('http://localhost:8080/absenceSetting/update', qs.stringify({
                     id: id,
                     absentType: absentType,
                     proportion: proportion,
@@ -239,7 +239,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post('http://lalala.tunnel.2bdata.com/absenceSetting/delete', qs.stringify({
+                    axios.post('http://localhost:8080/absenceSetting/delete', qs.stringify({
                         id: id
                     })).then(response => {
                         console.log(response);

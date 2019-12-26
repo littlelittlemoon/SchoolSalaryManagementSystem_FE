@@ -18,7 +18,7 @@
             </el-table-column>
             <el-table-column
                 label="缴纳基数比率"
-                prop="baseRate">
+                prop="baseRate" sortable>
             </el-table-column>
             <el-table-column
                 label="医疗保险比例"
@@ -46,7 +46,7 @@
                     </el-tag>
                 </template>
             </el-table-column>
-            <el-table-column label="操作" width="225">
+            <el-table-column label="操作" width="235">
                 <template scope="scope">
                     <el-button
                         size="small"
@@ -69,7 +69,7 @@
         </el-table>
         <el-dialog title="添加五险一金扣除方案" v-model="dialogFormVisible1">
             <el-form :model="addData">
-                <el-form-item label="缴纳基数比例" :label-width="formLabelWidth">
+                <el-form-item label="缴纳基数比例" :label-width="formLabelWidth" >
                     <el-input v-model="addData.baseRate" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="医疗保险比例" :label-width="formLabelWidth">
@@ -160,7 +160,7 @@
             },
             addInsuranceRule(){
                 this.dialogFormVisible1 = false;
-                axios.post('http://lalala.tunnel.2bdata.com/insuranceSetting/add', qs.stringify({
+                axios.post('http://localhost:8080/insuranceSetting/add', qs.stringify({
                     baseRate: this.addData.baseRate,
                     medicalRate: this.addData.medicalRate,
                     agedRate: this.addData.agedRate,
@@ -188,7 +188,7 @@
                 this.dialogFormVisible1 = true;
             },
             getInsuranceRuleData(){
-                axios.get('http://lalala.tunnel.2bdata.com/insuranceSetting/list').then(response => {
+                axios.get('http://localhost:8080/insuranceSetting/list').then(response => {
                     console.log(response);
                     if (response.data.code == 1) {
                         self.$notify.error({
@@ -213,7 +213,7 @@
             },
             updateInsuranceRule(){
                 this.dialogFormVisible = false;
-                axios.post('http://lalala.tunnel.2bdata.com/insuranceSetting/update', qs.stringify({
+                axios.post('http://localhost:8080/insuranceSetting/update', qs.stringify({
                     id: this.changeData.id,
                     baseRate: this.changeData.baseRate,
                     medicalRat: this.changeData.medicalRate,
@@ -244,7 +244,7 @@
                 } else {
                     status = 'enable';
                 }
-                axios.post('http://lalala.tunnel.2bdata.com/insuranceSetting/update', qs.stringify({
+                axios.post('http://localhost:8080/insuranceSetting/update', qs.stringify({
                     id: id,
                     baseRate: baseRate,
                     medicalRat: medicalRate,
@@ -272,7 +272,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post('http://lalala.tunnel.2bdata.com/insuranceSetting/delete', qs.stringify({
+                    axios.post('http://localhost:8080/insuranceSetting/delete', qs.stringify({
                         id: id
                     })).then(response => {
                         console.log(response);

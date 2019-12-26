@@ -157,7 +157,7 @@
         },
         methods: {
             getData(currentPage, pageSize){
-                axios.get('http://lalala.tunnel.2bdata.com/absentInfo/absentInfoCheckList', {
+                axios.get('http://localhost:8080/absentInfo/absentInfoCheckList', {
                     params: {
                         currentPage: currentPage,
                         pageSize: pageSize,
@@ -185,7 +185,7 @@
             getcheckedData(searchCondition, currentPage, pageSize){
                 let time = new Date();
                 time = formatDateTime(time);
-                axios.get('http://lalala.tunnel.2bdata.com/absentInfo/staffAbsentInfo', {
+                axios.get('http://localhost:8080/absentInfo/staffAbsentInfo', {
                     params: {
                         currentPage: currentPage,
                         pageSize: pageSize,
@@ -220,13 +220,13 @@
             },
             handleClick(tab, event) {
                 if (this.activeName == 'first') {
-                    this.getData(this.currentPage);
+                    this.getData(this.currentPage, this.pageSize);
                 } else {
                     this.getcheckedData(this.searchCondition, this.currentPage, this.pageSize);
                 }
             },
             sendToHr(){
-                axios.post('http://139.224.129.108:8089/absentInfo/sendToHr', qs.stringify({
+                axios.post('http://localhost:8080/absentInfo/sendToHr', qs.stringify({
                     staffId: getCookie("staffId")
                 })).then(response => {
                     console.log(response);
@@ -247,11 +247,10 @@
                 });
             },
             handlePass(row) {
-                axios.post('http://139.224.129.108:8089/absentInfo/checkAbsentInfo', qs.stringify({
+                axios.post('http://localhost:8080/absentInfo/checkAbsentInfo', qs.stringify({
                     staffId: row.staffId,
                     beginTime: row.absentStartTime,
                     status: 'd_pass'
-
                 })).then(response => {
                     console.log(response);
                     if (response.data.code == 1) {
@@ -268,7 +267,7 @@
                 });
             },
             handleReject(row) {
-                axios.post('http://139.224.129.108:8089/absentInfo/checkAbsentInfo', qs.stringify({
+                axios.post('http://localhost:8080/absentInfo/checkAbsentInfo', qs.stringify({
                     staffId: row.staffId,
                     beginTime: row.absentStartTime,
                     status: 'd_reject'

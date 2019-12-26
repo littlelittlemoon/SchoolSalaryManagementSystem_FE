@@ -65,7 +65,7 @@
         },
         methods: {
             submitForm(formName) {
-                axios.post('http://lalala.tunnel.2bdata.com/staffInfo/changePwd', qs.stringify({
+                axios.post('http://localhost:8080/staffInfo/changePwd', qs.stringify({
                     staffId: getCookie("staffId"),
                     oldPwd: this.passWord.oldPassWord,
                     newPwd: this.passWord.newPassWord

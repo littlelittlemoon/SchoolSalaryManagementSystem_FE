@@ -8,35 +8,36 @@
         <div class="ms-doc">
             <h3>学校工资管理系统（SSMS）</h3>
             <article>
-                <el-form :model="personalInfo" label-width="100px" class="demo-ruleForm">
-                    <el-form-item label="姓名" prop="staffName">
-                        <el-input disabled style="width: 60%;" v-model="personalInfo.staffName"></el-input>
-                    </el-form-item>
-                    <el-form-item label="性别" prop="staffSex">
-                        <el-input disabled style="width: 60%;" v-model="personalInfo.staffSex"></el-input>
-                    </el-form-item>
-                    <el-form-item label="所属部门" prop="departmentName">
-                        <el-input disabled style="width: 60%;" v-model="personalInfo.departmentName"></el-input>
-                    </el-form-item>
-                    <el-form-item label="职称" prop="staffTitle">
-                        <el-input disabled style="width: 60%;" v-model="personalInfo.titleName"></el-input>
-                    </el-form-item>
-                    <el-form-item label="职务" prop="staffDuty">
-                        <el-input disabled style="width: 60%;" v-model="personalInfo.dutyName"></el-input>
-                    </el-form-item>
-                    <el-form-item label="入职时间">
-                        <el-input disabled style="width: 60%;" v-model="personalInfo.entryTime"></el-input>
-                    </el-form-item>
-                    <el-form-item label="身份证号" prop="identityNum">
-                        <el-input disabled style="width: 60%;" v-model="personalInfo.identityNum"></el-input>
-                    </el-form-item>
-                    <el-form-item label="银行卡号" prop="bankAcount">
-                        <el-input disabled style="width: 60%;" v-model="personalInfo.bankAcount"></el-input>
-                    </el-form-item>
-                    <el-form-item label="联系电话" prop="phoneNum">
-                        <el-input disabled style="width: 60%;" v-model="personalInfo.telNum"></el-input>
-                    </el-form-item>
-                </el-form>
+                <h1>学校工资管理系统（SSMS）</h1>
+                <h2>主要功能模块</h2>
+                <el-row :gutter="20">
+                <el-col :span="12">
+                <div>
+                    <el-tree
+                        :data="data2"
+                        show-checkbox
+                        node-key="id"
+                        :default-expanded-keys="[1, 2, 4]"
+                        :default-checked-keys="[1, 2, 4,7,8,9,10,14,15,16]"
+                        :props="defaultProps">
+                    </el-tree>
+                </div>
+                </el-col>
+                <el-col :span="12">
+                <div>
+                    <el-tree
+                        :data="data3"
+                        show-checkbox
+                        node-key="id"
+                        :default-expanded-keys="[ 3,5,6]"
+                        :default-checked-keys="[ 3, 5,6,11,12,13,17,18,19,20,21,22]"
+                        :props="defaultProps">
+                    </el-tree>
+                </div>
+                </el-col>
+                </el-row>
+
+
             </article>
         </div>
 
@@ -45,31 +46,99 @@
 
 <script>
     export default {
-        data: function(){
+        data: function () {
             return {
-                personalInfo:{
-                    staffName: '谭凯悦',
-                    staffSex: '女',
-                    departmentName: '计算机学院',
-                    titleName: '教授',
-                    dutyName: '部门管理员',
-                    entryTime: '2008-12-19',
-                    identityNum: '5112587895454558525',
-                    bankAcount:'6258445522225844525',
-                    telNum: '15846885255'
-                }
+                data2: [{
+                    id: 1,
+                    label: '用户信息',
+                    children: [{
+                        id: 7,
+                        label: '用户登录、注销'
+                    }, {
+                        id: 8,
+                        label: '修改个人密码'
+                    }]
+                }, {
+                    id: 2,
+                    label: '考勤管理',
+                    children: [{
+                        id: 9,
+                        label: '请假申请'
+                    }, {
+                        id: 10,
+                        label: '撤回待审核请假申请'
+                    }, {
+                        id: 10,
+                        label: '考勤审核'
+                    }]
+                },  {
+                    id: 4,
+                    label: '员工信息管理',
+                    children: [{
+                        id: 14,
+                        label: '添加新员工'
+                    }, {
+                        id: 15,
+                        label: '删除员工'
+                    }, {
+                        id: 16,
+                        label: '修改员工信息'
+                    }]
+                }],
+                data3: [
+                   {
+                    id: 3,
+                    label: '工资管理',
+                    children: [{
+                        id: 11,
+                        label: '管理缺勤扣款'
+                    }, {
+                        id: 12,
+                        label: '管理五险一金'
+                    }, {
+                        id: 13,
+                        label: '管理扣税金额'
+                    }]
+                }, {
+                    id: 5,
+                    label: '工资发放管理',
+                    children: [{
+                        id: 17,
+                        label: '生成工资表'
+                    }, {
+                        id: 18,
+                        label: '发送工资单到银行'
+                    }, {
+                        id: 19,
+                        label: '发送工资单到员工'
+                    }]
+                }, {
+                    id:6,
+                    label: '薪资标准管理',
+                    children: [{
+                        id: 20,
+                        label: '管理五险一金计算标准'
+                    }, {
+                        id: 21,
+                        label: '管理缺勤扣款计算标准'
+                    }, {
+                        id: 22,
+                        label: '管理交税扣款计算标准'
+                    }]
+                }]
             }
         }
     }
 </script>
 
 <style scoped>
-    .ms-doc{
-        width:100%;
+    .ms-doc {
+        width: 100%;
         max-width: 980px;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     }
-    .ms-doc h3{
+
+    .ms-doc h3 {
         padding: 9px 10px 10px;
         margin: 0;
         font-size: 14px;
@@ -79,7 +148,8 @@
         border-bottom: 0;
         border-radius: 3px 3px 0 0;
     }
-    .ms-doc article{
+
+    .ms-doc article {
         padding: 45px;
         word-wrap: break-word;
         background-color: #fff;
@@ -87,12 +157,14 @@
         border-bottom-right-radius: 3px;
         border-bottom-left-radius: 3px;
     }
-    .ms-doc article h1{
-        font-size:32px;
+
+    .ms-doc article h1 {
+        font-size: 32px;
         padding-bottom: 10px;
         margin-bottom: 15px;
         border-bottom: 1px solid #ddd;
     }
+
     .ms-doc article h2 {
         margin: 24px 0 16px;
         font-weight: 600;
@@ -101,11 +173,13 @@
         font-size: 24px;
         border-bottom: 1px solid #eee;
     }
-    .ms-doc article p{
+
+    .ms-doc article p {
         margin-bottom: 15px;
         line-height: 1.5;
     }
-    .ms-doc article .el-checkbox{
+
+    .ms-doc article .el-checkbox {
         margin-bottom: 5px;
     }
 </style>

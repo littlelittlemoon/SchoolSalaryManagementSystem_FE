@@ -113,7 +113,7 @@
                 if (selMonth != '') {
                     time = formatDateTime(selMonth);
                 }
-                axios.get('http://lalala.tunnel.2bdata.com/absentInfo/staffAbsentInfo', {
+                axios.get('http://localhost:8080/absentInfo/staffAbsentInfo', {
                     params: {
                         currentPage: currentPage,
                         pageSize: pageSize,

@@ -14,23 +14,23 @@
             style="width: 100%">
             <el-table-column
                 label="编号"
-                prop="id">
-            </el-table-column>
-            <el-table-column
-                label="交税基数上界"
-                prop="minNum">
+                prop="id" width="100">
             </el-table-column>
             <el-table-column
                 label="交税基数下界"
-                prop="maxNum">
+                prop="minNum"  sortable width="140">
+            </el-table-column>
+            <el-table-column
+                label="交税基数上界"
+                prop="maxNum"  sortable width="140">
             </el-table-column>
             <el-table-column
                 label="适用税率"
-                prop="rate">
-            </el-table-column>
+                prop="rate" sortable width="140">
+            </el-table-column >
             <el-table-column
                 label="速算扣除数"
-                prop="calcuNum">
+                prop="calcuNum"  sortable>
             </el-table-column>
             <el-table-column
                 prop="status"
@@ -42,7 +42,7 @@
                     </el-tag>
                 </template>
             </el-table-column>
-            <el-table-column label="操作" width="251">
+            <el-table-column label="操作" width="220">
                 <template scope="scope">
                     <el-button
                         size="small"
@@ -85,16 +85,16 @@
         </el-dialog>
         <el-dialog title="调整扣税规则" v-model="dialogFormVisible">
             <el-form :model="changeData">
-                <el-form-item label="交税基数上界" :label-width="formLabelWidth">
+                <el-form-item label="交税基数上界" :label-width="formLabelWidth" >
                     <el-input v-model="changeData.minNum" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="交税基数下界" :label-width="formLabelWidth">
+                <el-form-item label="交税基数下界" :label-width="formLabelWidth" >
                     <el-input v-model="changeData.maxNum" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="适用税率" :label-width="formLabelWidth">
+                <el-form-item label="适用税率" :label-width="formLabelWidth" >
                     <el-input v-model="changeData.rate" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="速算扣除数" :label-width="formLabelWidth">
+                <el-form-item label="速算扣除数" :label-width="formLabelWidth" >
                     <el-input v-model="changeData.calcuNum" auto-complete="off"></el-input>
                 </el-form-item>
             </el-form>
@@ -147,7 +147,7 @@
             },
             addTaxRule(){
                 this.dialogFormVisible1 = false;
-                axios.post('http://lalala.tunnel.2bdata.com/taxSetting/add', qs.stringify({
+                axios.post('http://localhost:8080/taxSetting/add', qs.stringify({
                     minNum: this.addData.minNum,
                     maxNum: this.addData.maxNum,
                     rate: this.addData.rate,
@@ -171,7 +171,7 @@
                 });
             },
             getTaxRuleData(){
-                axios.get('http://lalala.tunnel.2bdata.com/taxSetting/list').then(response => {
+                axios.get('http://localhost:8080/taxSetting/list').then(response => {
                     console.log(response);
                     if (response.data.code == 1) {
                         self.$notify.error({
@@ -202,7 +202,7 @@
                 } else {
                     status = 'enable';
                 }
-                axios.post('http://lalala.tunnel.2bdata.com/taxSetting/update', qs.stringify({
+                axios.post('http://localhost:8080/taxSetting/update', qs.stringify({
                     id: id,
                     minNum: minNum,
                     maxNum: maxNum,
@@ -225,7 +225,7 @@
             },
             updateTaxRule(){
                 this.dialogFormVisible = false;
-                axios.post('http://lalala.tunnel.2bdata.com/taxSetting/update', qs.stringify({
+                axios.post('http://localhost:8080/taxSetting/update', qs.stringify({
                     id: this.changeData.id,
                     minNum: this.changeData.minNum,
                     maxNum: this.changeData.maxNum,
@@ -255,8 +255,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    console.log("4545454454545454545454");
-                    axios.post('http://lalala.tunnel.2bdata.com/taxSetting/delete', qs.stringify({
+                    axios.post('http://localhost:8080/taxSetting/delete', qs.stringify({
                         id: id
                     })).then(response => {
                         console.log(response);

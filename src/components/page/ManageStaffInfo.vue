@@ -1,5 +1,11 @@
 <template>
     <div>
+        <div class="crumbs">
+            <el-breadcrumb separator=">>">
+                <el-breadcrumb-item><i></i>员工信息</el-breadcrumb-item>
+                <el-breadcrumb-item><i></i>管理员工信息</el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
         <el-input
             placeholder="员工姓名、编号、部门..."
             icon="search"
@@ -333,7 +339,7 @@
         },
         methods: {
             getStaffList(staffInfoSearch, currentPage, pageSize){
-                axios.get('http://lalala.tunnel.2bdata.com/staffInfo/staffList', {
+                axios.get('http://localhost:8080/staffInfo/staffList', {
                     params: {
                         staffInfoSearch: staffInfoSearch,
                         currentPage: currentPage,
@@ -373,7 +379,7 @@
             },
             updateStaffInfo(){
                 this.dialogFormVisible = false;
-                axios.post('http://lalala.tunnel.2bdata.com/staffInfo/updateStaffInfo', qs.stringify({
+                axios.post('http://localhost:8080/staffInfo/updateStaffInfo', qs.stringify({
                     staffId: this.ruleForm.staffId,
                     staffName: this.ruleForm.staffName,
                     staffSex: this.ruleForm.staffSex,
@@ -409,7 +415,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post('http://lalala.tunnel.2bdata.com/staffInfo/deleteStaffInfo', qs.stringify({
+                    axios.post('http://localhost:8080/staffInfo/deleteStaffInfo', qs.stringify({
                         staffId: id
                     })).then(response => {
                         console.log(response);
