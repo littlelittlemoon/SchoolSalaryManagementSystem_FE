@@ -59,9 +59,7 @@
                 prop="absentMoney">
             </el-table-column>
         </el-table>
-        <el-table :data="salaryList" border
-                  :summary-method="getSummaries"
-                  show-summary style="width: 100%" v-if="!isShow">
+        <el-table :data="salaryList" border style="width: 100%" v-if="!isShow">
             <el-table-column
                 label="工资发放年月"
                 prop="checkTime">
@@ -186,7 +184,7 @@
                         }, 0);
                         sums[index] += ' 元';
                     } else {
-                        sums[index] = 'N/A';
+                        sums[index] = '--';
                     }
                 });
                 return sums;
